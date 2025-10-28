@@ -1,0 +1,83 @@
+# noise_filters.yaml
+
+keywords:
+  # Visual Studio components
+  - visual studio
+  - vs_
+  - devenv
+  - devenx64
+  - minshell
+  - clickonce
+  - vswebprotocolselector
+  - githubprotocolhandler
+  - immersive activate
+  - coreeditorfonts
+  - filehandler
+  - tipsmsi
+  - shellinterop
+  - shellshared
+  - devenvshared
+  - communityshared
+  - setup
+  - msi
+  - bootstrapper
+  - icecap
+
+  # .NET ecosystem noise
+  - .net host
+  - .net sdk
+  - .net runtime
+  - .net toolset
+  - .net apphost
+  - .net targeting pack
+  - .net templates
+  - apphost
+  - targeting pack
+  - shared framework
+  - toolset
+  - template
+  - resolver
+
+  # Redistributables
+  - redistributable
+  - vcpp
+  - vc++
+  - vcruntime
+  - crt
+
+  # Developer tools / profilers / telemetry
+  - telemetry
+  - intellitrace
+  - diagnostics
+  - diagnosticshub
+  - testplatform
+  - profilerproxy
+  - log collector
+  - collectionservice
+  - collectionresources
+
+  # SQL tools
+  - sqlclickonce
+  - clr types
+  - data-tier application
+
+  # Architecture/platform suffixes
+  - arm64
+  - x64
+  - x86
+  - amd64
+
+  # Other low-risk tooling
+  - resxeditor
+  - interop
+  - manifest
+  - local feed
+  - extensions
+  - debugging tools
+  - jit
+  - wmi provider
+
+vendors:
+  - microsoft corporation
+  - microsoft
+  - visual studio

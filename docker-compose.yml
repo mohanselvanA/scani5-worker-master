@@ -1,0 +1,100 @@
+
+services:
+  worker_db:
+    image: postgres:15
+    container_name: postgres_worker_db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: worker_data
+    ports:
+      - "5432:5432"
+    volumes:
+      - worker_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "root", "-d", "worker_data"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nvd_db:
+    image: postgres:15
+    container_name: postgres_nvd_db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: nvd_data
+    ports:
+      - "5433:5432"  # exposes the second DB on host port 5433
+    volumes:
+      - nvd_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "root", "-d", "nvd_data"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  celery_worker:
+    build: .
+    container_name: celery_worker
+    command: celery -A celery_worker.celery_app worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - worker_db
+      - nvd_db
+
+  api:
+    build: .
+    container_name: fastapi_app
+    depends_on:
+      worker_db:
+        condition: service_healthy
+      nvd_db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env 
+    volumes:
+      - .:/app
+      - ./nvd_feeds:/app/nvd_feeds:ro
+    command: ["sh", "-c", "alembic upgrade head && python app/core/seed_runner.py && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+
+  flower:
+    image: mher/flower
+    container_name: flower
+    ports:
+      - "5555:5555"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    command: >
+      celery flower
+      --broker=redis://redis:6379/0
+      --port=5555
+    depends_on:
+      - redis
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: worker_db
+
+volumes:
+  worker_data:
+  nvd_data:

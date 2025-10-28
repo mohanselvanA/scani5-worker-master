@@ -1,0 +1,37 @@
+# App related
+nvd_feeds/
+
+# Python cache and build files
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Environment config
+.env
+.env.*
+
+# Virtual environments
+.venv/
+env/
+ENV/
+
+# Alembic migration artifacts
+alembic.ini.bak
+
+# SQLite files (if ever used locally)
+*.db
+*.sqlite3
+
+# Docker artifacts
+*.log
+*.sql
+
+# IDE settings
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
